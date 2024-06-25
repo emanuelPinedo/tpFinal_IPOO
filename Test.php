@@ -257,11 +257,11 @@ function menuDeViaje(){
                         $objEmp = $objViaje->getObjEmpresa();
                     }
 
-                    echo "Ingrese el nuevo N° del Responsable del Viaje: \n";
-                    $respV = trim(fgets(STDIN));
+                    echo "Ingrese el nuevo DNI del Responsable del Viaje: \n";
+                    $dniResp= trim(fgets(STDIN));
                     $objRespV = new ResponsableV();
                     //Hago lo mismo que con el id de la empresa
-                    if ($respV != "" && !$objRespV->Buscar($respV)) {
+                    if ($dniResp != "" && !$objRespV->Buscar($dniResp)) {
                         echo "Esta Responsable no ha sido encontrado. Es probable que no exista.\n";
                         $objRespV = $objViaje->getObjResponsable();
                     }
