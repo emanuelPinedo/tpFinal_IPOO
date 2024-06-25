@@ -206,12 +206,12 @@ function menuDeViaje(){
                     echo "Esta Empresa no ha sido encontrada.\n";
                     $objEmp = null;
                 }
-                echo "Ingrese el N° de Empleado del Responsable del Viaje: \n";
-                $nroEmp = trim(fgets(STDIN));
+                echo "Ingrese el DNI de Empleado del Responsable del Viaje: \n";
+                $dniEmp = trim(fgets(STDIN));
 
                 // Creo el objeto ResponsableV y lo busco
                 $objRespV = new ResponsableV();
-                if (!$objRespV->buscar($nroEmp)) {
+                if (!$objRespV->buscar($dniEmp)) {
                     echo "Este Responsable no ha sido encontrado.\n";
                     $objRespV = null; // Reinicializar el objeto si no se encuentra
                 }
@@ -234,7 +234,7 @@ function menuDeViaje(){
 
                 $objViaje = new Viaje();
                 if ($objViaje->buscar($idViaje)) {//Busco le Viaje con el id ingresado
-                    echo "Viaje encontrada: \n";
+                    echo "Viaje encontrado: \n";
                     echo "Ingrese el nuevo destino de viaje: \n";
                     $destinoViaje = trim(fgets(STDIN));
                     //Evaluamos que si ingresa un destino como vacio, el destino seguirá siendo el mismo
@@ -245,9 +245,6 @@ function menuDeViaje(){
                     echo "Ingrese la nueva cantidad max. de Pasajeros en el Viaje: \n";
                     $cantMax = trim(fgets(STDIN));
                     //Hago lo mismo que hice con el destino :v
-                    if($cantMax = trim(fgets(STDIN))){
-                        $cantMax = $objViaje->getVCantMaxPasajeros();
-                    }
 
                     echo "Ingrese el nuevo ID de Empresa: \n";
                     $idEmp = trim(fgets(STDIN));
@@ -361,7 +358,7 @@ function menuDeViaje(){
 function menuDeResponsableV() {
     do {
         echo "****************************************\n";
-        echo "| Usted accedió a la sección Responsable |\n";
+        echo "|Usted accedió a la sección Responsable|\n";
         echo "| Elija una opción                     |\n";
         echo "|   1. Agregar                         |\n";
         echo "|   2. Modificar                       |\n";
@@ -487,7 +484,7 @@ function menuDeResponsableV() {
 function menuDePasajero() {
     do {
         echo "*************************************\n";
-        echo "| Usted accedió a la sección Pasajero |\n";
+        echo "|Usted accedió a la sección Pasajero|\n";
         echo "| Elija una opción                  |\n";
         echo "|   1. Agregar                      |\n";
         echo "|   2. Modificar                    |\n";
@@ -529,9 +526,10 @@ function menuDePasajero() {
                     break;
                 } elseif(!$objViaje->pasajeDisponible()) {
                     echo "No hay más pasajes disponibles\n";
+                    break;
                 } else {
                     // Crear el objeto Pasajero y cargar los datos
-                $objPasajero->cargar($documento, $nombre, $apellido, $telefono, $idViaje);
+                $objPasajero->cargar($documento, $nombre, $apellido, $idViaje, $telefono);
 
                 // Insertar el pasajero en la base de datos
                 if ($objPasajero->insertar()) {

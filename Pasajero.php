@@ -8,7 +8,7 @@ class Pasajero extends Persona{
 	public function __construct() {
 		parent::__construct();
 		$this->telefono = '';
-		$this->objViaje = '';
+		$this->objViaje = null;
 	}
 
 	public function getTelefono() {
@@ -67,7 +67,7 @@ class Pasajero extends Persona{
     public function listar($condicion = "") {
         $arregloPasajero = null;
         $base = new BaseDatos();
-        $consultaPasajero = "SELECT * FROM pasajero ";
+        $consultaPasajero = "SELECT * FROM pasajero";
         if ($condicion != "") {
             $consultaPasajero .= " WHERE " . $condicion;
         }
@@ -76,8 +76,7 @@ class Pasajero extends Persona{
             if ($base->Ejecutar($consultaPasajero)) {
                 $arregloPasajero = array();
                 while ($row2 = $base->Registro()) {
-
-					/*$PerDocumento = $row2['pdocumento'];
+                    /*$PerDocumento = $row2['pdocumento'];
                     $Nombre = $row2['nombre'];
                     $Apellido = $row2['apellido'];
                     $PTelefono = $row2['ptelefono'];
@@ -86,9 +85,8 @@ class Pasajero extends Persona{
                     $pasaj = new Pasajero();
                     $pasaj->cargar($PerDocumento,$Nombre,$Apellido,$ptelefono,$idviaje);
                     array_push($arregloPasajero,$pasaj);*/
-					
                     $obj = new Pasajero();
-                    $obj->cargar($row2['pdocumento'], $row2['nombre'], $row2['apellido'], $row2['ptelefono'], $row2['idviaje']);
+                    $obj->cargar($row2['pdocumento'], null, null, $row2['idviaje'], $row2['ptelefono']);
                     array_push($arregloPasajero, $obj);
                 }
             } else {
@@ -100,6 +98,32 @@ class Pasajero extends Persona{
         return $arregloPasajero;
     }
 
+    /*public function listar($condicion = "") {//CON INNER JOIN
+        $arregloPasajero = null;
+        $base = new BaseDatos();
+        $consultaPasajero = "SELECT p.*, per.nombre, per.apellido 
+                             FROM pasajero p 
+                             INNER JOIN persona per ON p.pdocumento = per.documento";
+        if ($condicion != "") {
+            $consultaPasajero .= " WHERE " . $condicion;
+        }
+        $consultaPasajero .= " ORDER BY p.pdocumento";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($consultaPasajero)) {
+                $arregloPasajero = array();
+                while ($row2 = $base->Registro()) {
+                    $obj = new Pasajero();
+                    $obj->cargar($row2['pdocumento'], $row2['nombre'], $row2['apellido'], $row2['idviaje'], $row2['ptelefono']);
+                    array_push($arregloPasajero, $obj);
+                }
+            } else {
+                $this->setMsjOperacion($base->getERROR());
+            }
+        } else {
+            $this->setMsjOperacion($base->getERROR());
+        }
+        return $arregloPasajero;
+    }*/
 
 	//Funcion para añadir datos
     public function insertar() {
@@ -160,7 +184,7 @@ class Pasajero extends Persona{
     }
 
 	public function __toString(){
-		return parent::__toString() .  
+		return /*parent::__toString() .*/  
 		"\nTelefono: " . $this->getTelefono() . 
 		"\nId del Viaje: " . $this->getObjViaje() . "\n";
 	}

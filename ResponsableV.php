@@ -87,11 +87,11 @@ class ResponsableV extends Persona {
         return $arregloResponsable;
     }
 
-    /*public function listar($condicion = "") { //CON JOIN
+    /*public function listar($condicion = "") { //CON INNER JOIN
         $arregloResponsable = null;
         $base = new BaseDatos();
         $consultaResponsable = "SELECT responsable.*, persona.nombre, persona.apellido FROM responsable 
-                                JOIN persona ON responsable.rdocumento = persona.documento";
+                                INNER JOIN persona ON responsable.rdocumento = persona.documento";
         if ($condicion != "") {
             $consultaResponsable .= ' WHERE ' . $condicion;
         }

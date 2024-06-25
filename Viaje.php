@@ -96,7 +96,7 @@ class Viaje{
     public function pasajeDisponible(){
         $res = false;
         $cantPasajero = count($this->getColPasajeros());
-        if($this->vCantMaxPasajeros > $cantPasajero) {
+        if($this->getVCantMaxPasajeros() > $cantPasajero) {
             $res = true;
         }
         return $res;
@@ -121,7 +121,7 @@ class Viaje{
                     
                     // Buscar y asignar el objeto Responsable
                     $objResponsable = new ResponsableV();
-                    if ($objResponsable->buscar($row2['rnumeroempleado'])) {
+                    if ($objResponsable->buscar($row2['rdocumento'])) {
                         $this->setObjResponsable($objResponsable);
                     } else {
                         $this->setMsjOperacion("Este Responsable no ha sido encontrado.");
@@ -158,7 +158,7 @@ class Viaje{
                     $Destino = $row2['vdestino'];
                     $CantMaxPas = $row2['vcantmaxpasajeros'];
                     $IdEmpresa = $row2['idempresa'];
-                    $RNumeroEmpleado = $row2['rnumeroempleado'];
+                    $RNumeroEmpleado = $row2['rdocumento'];
                     $VImporte = $row2['vimporte'];
     
                     // Crear objetos Empresa y ResponsableV
@@ -210,7 +210,7 @@ class Viaje{
     public function modificar(){
         $resp = false;
         $base = new BaseDatos();
-        $consultaUpdate = "UPDATE viaje SET vdestino='" . $this->getVDestino() . "'vcantmaxpasajeros='" . $this->getVCantMaxPasajeros() . "', idempresa='" . $this->getObjEmpresa() . "',rdocumento='" . $this->getObjResponsable() . "', vimporte='" . $this->getVImporte() . "' WHERE idviaje=" . $this->getIdViaje();
+        $consultaUpdate = "UPDATE viaje SET vdestino='" . $this->getVDestino() . "', vcantmaxpasajeros='" . $this->getVCantMaxPasajeros() . "', idempresa='" . $this->getObjEmpresa()->getIdEmpresa() . "', rdocumento='" . $this->getObjResponsable()->getDocumento() . "', vimporte='" . $this->getVImporte() . "' WHERE idviaje=" . $this->getIdViaje();
         
         if($base->Iniciar()){
             if($base->Ejecutar($consultaUpdate)){
