@@ -61,7 +61,7 @@ class ResponsableV extends Persona {
         }
         return $resp;
     }
-
+/*
     public function listar($condicion = "") {
         $arregloResponsable = null;
         $base = new BaseDatos();
@@ -86,8 +86,8 @@ class ResponsableV extends Persona {
         }
         return $arregloResponsable;
     }
-
-    /*public function listar($condicion = "") { //CON INNER JOIN
+*/
+    public function listar($condicion = "") { //CON INNER JOIN
         $arregloResponsable = null;
         $base = new BaseDatos();
         $consultaResponsable = "SELECT responsable.*, persona.nombre, persona.apellido FROM responsable 
@@ -111,7 +111,7 @@ class ResponsableV extends Persona {
             $this->setMsjOperacion($base->getERROR());
         }
         return $arregloResponsable;
-    }*/
+    }
     
 
     public function insertar() {
@@ -196,6 +196,6 @@ class ResponsableV extends Persona {
     }
 
     public function __toString() {
-        return /*parent::__toString() .*/ "\nNúmero de Empleado: " . $this->getNroEmpleado() . "\nNúmero de Licencia: " . $this->getNroLicencia() . "\n";
+        return parent::__toString() . "\nNúmero de Empleado: " . $this->getNroEmpleado() . "\nNúmero de Licencia: " . $this->getNroLicencia() . "\n";
     }
 }

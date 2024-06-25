@@ -92,18 +92,40 @@ class Viaje{
         $this->setObjResponsable($objResp);
         $this->setVImporte($impo);
     }
-    
-    public function pasajeDisponible(){
+
+    public function pasajeDisponible() {
+        $this->actualizarPasajeros(); // Asegurarse de que la colección de pasajeros esté actualizada
         $res = false;
         $cantPasajero = count($this->getColPasajeros());
-        if($this->getVCantMaxPasajeros() > $cantPasajero) {
+        if ($this->getVCantMaxPasajeros() > $cantPasajero) {
             $res = true;
         }
         return $res;
     }
-
+    
+    public function actualizarPasajeros() {
+        $base = new BaseDatos();
+        $consultaPasajeros = "SELECT * FROM pasajero WHERE idViaje = " . $this->getIdViaje();
+        $this->colPasajeros = [];
+    
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($consultaPasajeros)) {
+                while ($row = $base->Registro()) {
+                    $pasajero = new Pasajero();
+                    $documento = isset($row['documento']) ? $row['documento'] : '';
+                    $nombre = isset($row['nombre']) ? $row['nombre'] : '';
+                    $apellido = isset($row['apellido']) ? $row['apellido'] : '';
+                    $telefono = isset($row['telefono']) ? $row['telefono'] : '';
+    
+                    $pasajero->cargar($documento, $nombre, $apellido, $this->getIdViaje(), $telefono);
+                    array_push($this->colPasajeros, $pasajero);
+                }
+            }
+        }
+    }
+    
     //Funcion para realizar Consultas
-    public function buscar($id){
+    public function buscar($id) {
         $base = new BaseDatos();
         $consultaViaje = "SELECT * FROM viaje WHERE idViaje = " . $id;
         $resp = false;
@@ -128,6 +150,10 @@ class Viaje{
                     }
                     
                     $this->setVImporte($row2['vimporte']);
+                    
+                    // Cargar la colección de pasajeros del viaje
+                    $this->cargarPasajeros();
+                    
                     $resp = true;
                 } else {
                     $this->setMsjOperacion("No se encontró ningún viaje con el ID especificado.");
@@ -141,7 +167,27 @@ class Viaje{
         return $resp;
     }
     
-
+    // Método para cargar la colección de pasajeros de un viaje
+    private function cargarPasajeros() {
+        $base = new BaseDatos();
+        $consultaPasajeros = "SELECT documento, nombre, apellido, telefono FROM pasajero WHERE idviaje = " . $this->getIdViaje();
+        if($base->Iniciar()){
+            if($base->Ejecutar($consultaPasajeros)){
+                $pasajeros = array();
+                while($row = $base->Registro()){
+                    $objPasajero = new Pasajero();
+                    $objPasajero->cargar($row['documento'], $row['nombre'], $row['apellido'], $this->getIdViaje(), $row['telefono']);
+                    array_push($pasajeros, $objPasajero);
+                }
+                $this->setColPasajeros($pasajeros);
+            } else {
+                $this->setMsjOperacion($base->getERROR());
+            }
+        } else {
+            $this->setMsjOperacion($base->getERROR());
+        }
+    }
+    
     public function listar($condicion = "") {
         $arregloViaje = null;
         $base = new BaseDatos();
@@ -188,6 +234,12 @@ class Viaje{
     
         // Verifica que los objetos estén correctamente inicializados
         if ($this->getObjEmpresa() != null && $this->getObjResponsable() != null) {
+            // Verifica también la disponibilidad de pasajes antes de insertar
+            if (!$this->pasajeDisponible()) {
+                $this->setMsjOperacion("No hay más pasajes disponibles para este viaje.");
+                return false;
+            }
+    
             $consultaInsert = "INSERT INTO viaje(vdestino, vcantmaxpasajeros, idempresa, rdocumento, vimporte) 
                                VALUES ('" . $this->getVDestino() . "', " . $this->getVCantMaxPasajeros() . ", " . $this->getObjEmpresa()->getIdEmpresa() . ", " . $this->getObjResponsable()->getDocumento() . ", " . $this->getVImporte() . ")";
             if ($base->Iniciar()) {
@@ -204,7 +256,8 @@ class Viaje{
         }
     
         return $resp;
-    }    
+    }
+    
 
     //Funcion para modificar la BD según el id del viaje
     public function modificar(){

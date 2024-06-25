@@ -64,7 +64,7 @@ class Pasajero extends Persona{
 		return $resp;
 	}
 
-    public function listar($condicion = "") {
+   /* public function listar($condicion = "") {
         $arregloPasajero = null;
         $base = new BaseDatos();
         $consultaPasajero = "SELECT * FROM pasajero";
@@ -84,7 +84,7 @@ class Pasajero extends Persona{
 
                     $pasaj = new Pasajero();
                     $pasaj->cargar($PerDocumento,$Nombre,$Apellido,$ptelefono,$idviaje);
-                    array_push($arregloPasajero,$pasaj);*/
+                    array_push($arregloPasajero,$pasaj);*cortar comentario*
                     $obj = new Pasajero();
                     $obj->cargar($row2['pdocumento'], null, null, $row2['idviaje'], $row2['ptelefono']);
                     array_push($arregloPasajero, $obj);
@@ -97,8 +97,8 @@ class Pasajero extends Persona{
         }
         return $arregloPasajero;
     }
-
-    /*public function listar($condicion = "") {//CON INNER JOIN
+*/
+    public function listar($condicion = "") {//CON INNER JOIN
         $arregloPasajero = null;
         $base = new BaseDatos();
         $consultaPasajero = "SELECT p.*, per.nombre, per.apellido 
@@ -123,7 +123,7 @@ class Pasajero extends Persona{
             $this->setMsjOperacion($base->getERROR());
         }
         return $arregloPasajero;
-    }*/
+    }
 
 	//Funcion para añadir datos
     public function insertar() {
@@ -164,6 +164,8 @@ class Pasajero extends Persona{
         return $resp;
     }
 
+    
+  
 	//Funcion para eliminar un viaje de la BD según el documento de la persona
     public function eliminar() {
         $base = new BaseDatos();
@@ -184,7 +186,7 @@ class Pasajero extends Persona{
     }
 
 	public function __toString(){
-		return /*parent::__toString() .*/  
+		return parent::__toString() . 
 		"\nTelefono: " . $this->getTelefono() . 
 		"\nId del Viaje: " . $this->getObjViaje() . "\n";
 	}

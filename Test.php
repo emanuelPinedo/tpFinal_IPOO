@@ -500,37 +500,43 @@ function menuDePasajero() {
         switch($opcionPasaj) {
             case 1:
                 echo "OPCIÓN AGREGAR Pasajero\n";
+                echo "Ingrese el ID del Viaje al que pertenece el Pasajero: \n";
+                $idViaje = trim(fgets(STDIN));
+            
+                // Verificar si el viaje existe
+                $objViaje = new Viaje();
+                if (!$objViaje->buscar($idViaje)) {
+                    echo "El Viaje con ID $idViaje no existe.\n";
+                    break;
+                }
+            
+                // Verificar disponibilidad de pasajes
+                if (!$objViaje->pasajeDisponible()) {
+                    echo "El viaje seleccionado está lleno.\n";
+                    break;
+                }
+            
+                // Continuar con la carga de datos del pasajero
                 echo "Ingrese el documento del Pasajero: \n";
                 $documento = trim(fgets(STDIN));
-
+            
                 // Verificar si el pasajero ya existe
                 $objPasajero = new Pasajero();
                 if ($objPasajero->buscar($documento)) {
                     echo "El Pasajero con documento $documento ya existe.\n";
                     break;
                 }
-
+            
                 echo "Ingrese el nombre del Pasajero: \n";
                 $nombre = trim(fgets(STDIN));
                 echo "Ingrese el apellido del Pasajero: \n";
                 $apellido = trim(fgets(STDIN));
                 echo "Ingrese el teléfono del Pasajero: \n";
                 $telefono = trim(fgets(STDIN));
-                echo "Ingrese el ID del Viaje al que pertenece el Pasajero: \n";
-                $idViaje = trim(fgets(STDIN));
-
-                // Verificar si el viaje existe
-                $objViaje = new Viaje();
-                if (!$objViaje->buscar($idViaje)) {
-                    echo "El Viaje con ID $idViaje no existe.\n";
-                    break;
-                } elseif(!$objViaje->pasajeDisponible()) {
-                    echo "No hay más pasajes disponibles\n";
-                    break;
-                } else {
-                    // Crear el objeto Pasajero y cargar los datos
+            
+                // Crear el objeto Pasajero y cargar los datos
                 $objPasajero->cargar($documento, $nombre, $apellido, $idViaje, $telefono);
-
+            
                 // Insertar el pasajero en la base de datos
                 if ($objPasajero->insertar()) {
                     echo "El Pasajero ha sido agregado correctamente.\n";
@@ -539,8 +545,7 @@ function menuDePasajero() {
                     echo "Mensaje de error: " . $objPasajero->getMsjOperacion() . "\n";
                 }
                 break;
-                }
-
+            
             case 2:
                 echo "OPCIÓN MODIFICAR Pasajero\n";
                 echo "Ingrese el documento del Pasajero que desea modificar: \n";
