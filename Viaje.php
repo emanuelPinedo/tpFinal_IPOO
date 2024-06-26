@@ -112,10 +112,10 @@ class Viaje{
             if ($base->Ejecutar($consultaPasajeros)) {
                 while ($row = $base->Registro()) {
                     $pasajero = new Pasajero();
-                    $documento = isset($row['documento']) ? $row['documento'] : '';
+                    $documento = isset($row['pdocumento']) ? $row['pdocumento'] : '';
                     $nombre = isset($row['nombre']) ? $row['nombre'] : '';
                     $apellido = isset($row['apellido']) ? $row['apellido'] : '';
-                    $telefono = isset($row['telefono']) ? $row['telefono'] : '';
+                    $telefono = isset($row['ptelefono']) ? $row['ptelefono'] : '';
     
                     $pasajero->cargar($documento, $nombre, $apellido, $this->getIdViaje(), $telefono);
                     array_push($this->colPasajeros, $pasajero);
@@ -170,13 +170,17 @@ class Viaje{
     // Método para cargar la colección de pasajeros de un viaje
     private function cargarPasajeros() {
         $base = new BaseDatos();
-        $consultaPasajeros = "SELECT documento, nombre, apellido, telefono FROM pasajero WHERE idviaje = " . $this->getIdViaje();
+        $consultaPasajeros = "SELECT p.pdocumento, per.nombre, per.apellido, p.ptelefono 
+                              FROM pasajero AS p
+                              INNER JOIN persona AS per ON p.pdocumento = per.documento
+                              WHERE p.idviaje = " . $this->getIdViaje();
+        
         if($base->Iniciar()){
             if($base->Ejecutar($consultaPasajeros)){
                 $pasajeros = array();
                 while($row = $base->Registro()){
                     $objPasajero = new Pasajero();
-                    $objPasajero->cargar($row['documento'], $row['nombre'], $row['apellido'], $this->getIdViaje(), $row['telefono']);
+                    $objPasajero->cargar($row['pdocumento'], $row['nombre'], $row['apellido'], $this->getIdViaje(), $row['ptelefono']);
                     array_push($pasajeros, $objPasajero);
                 }
                 $this->setColPasajeros($pasajeros);

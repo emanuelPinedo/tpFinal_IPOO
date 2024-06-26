@@ -102,8 +102,8 @@ class Pasajero extends Persona{
         $arregloPasajero = null;
         $base = new BaseDatos();
         $consultaPasajero = "SELECT p.*, per.nombre, per.apellido 
-                             FROM pasajero p 
-                             INNER JOIN persona per ON p.pdocumento = per.documento";
+                             FROM pasajero AS p 
+                             INNER JOIN persona AS per ON p.pdocumento = per.documento";
         if ($condicion != "") {
             $consultaPasajero .= " WHERE " . $condicion;
         }
